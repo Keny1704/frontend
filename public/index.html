@@ -1,43 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!-- React and Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <script type="text/babel">
+      const { useState, StrictMode } = React;
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+      function Login() {
+        const [username, setUsername] = useState(""); // Para guardar el nombre de usuario
+        const [password, setPassword] = useState(""); // Para guardar la contraseña
+        const [error, setError] = useState(""); // Para mostrar el mensaje de error
+        const [loading, setLoading] = useState(false); // Para mostrar el estado de carga
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+        const handleSubmit = async (e) => {
+          e.preventDefault(); // Previene el comportamiento por defecto del formulario
+          setLoading(true); // Habilita el estado de carga
+          setError(""); // Resetea cualquier error anterior
+
+          try {
+            const response = await fetch("http://localhost:5000/api/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json", // Enviamos los datos como JSON
+              },
+              body: JSON.stringify({ username, password }), // Enviamos el nombre de usuario y la contraseña
+            });
+
+            const data = await response.json(); // Obtenemos la respuesta en formato JSON
+
+            if (response.ok) {
+              // Si el login es exitoso, guardamos el token y los datos del usuario en localStorage
+              localStorage.setItem("token", data.token);
+              localStorage.setItem("user", JSON.stringify(data.user));
+              window.location.href = "/dashboard"; // Redirigimos al dashboard
+            } else {
+              setError(data.message || "Credenciales incorrectas."); // Mostramos el error si las credenciales son incorrectas
+            }
+          } catch (err) {
+            console.error(err); // Imprimimos el error en la consola si ocurre un problema con la conexión
+            setError("Error al conectar con el servidor"); // Mensaje de error de conexión
+          } finally {
+            setLoading(false); // Desactivamos el estado de carga al finalizar
+          }
+        };
+
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+              <h1 className="text-2xl font-semibold text-center mb-6 text-gray-700">
+                Iniciar sesión
+              </h1>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-600">
+                    Usuario
+                  </label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)} // Actualiza el nombre de usuario
+                    required
+                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-600">
+                    Contraseña
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)} // Actualiza la contraseña
+                    required
+                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+
+                {error && <p className="text-red-500 text-sm">{error}</p>} {/* Muestra el error si hay uno */}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200 disabled:opacity-60"
+                >
+                  {loading ? "Verificando..." : "Acceder"}
+                </button>
+              </form>
+            </div>
+          </div>
+        );
+      }
+
+      // Renderiza el componente Login en el elemento con id="root"
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(
+        <StrictMode>
+          <Login />
+        </StrictMode>
+      );
+    </script>
   </body>
 </html>
