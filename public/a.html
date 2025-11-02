@@ -44,13 +44,13 @@
               // Si el login es exitoso, guardamos el token y los datos del usuario en localStorage
               localStorage.setItem("token", data.token);
               localStorage.setItem("user", JSON.stringify(data.user));
-              window.location.href = "/inicio"; // Redirigimos al dashboard
+              window.location.href = "/dashboard"; // Redirigimos al dashboard
             } else {
               setError(data.message || "Credenciales incorrectas."); // Mostramos el error si las credenciales son incorrectas
             }
           } catch (err) {
             console.error(err); // Imprimimos el error en la consola si ocurre un problema con la conexión
-            setError("Error al conectar con el servidor"); // Mensaje de error de conexión
+            setError("Error al conectar con el servidor. Verifica que el backend esté ejecutándose en puerto 5000."); // Mensaje de error de conexión
           } finally {
             setLoading(false); // Desactivamos el estado de carga al finalizar
           }
