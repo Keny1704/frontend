@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cargando - Keny Joyeria</title>
+<style>
+  body, html {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a1a, #3a3a3a);
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    perspective: 800px; /* perspectiva global para 3D */
+  }
+
+  .loader {
+    position: relative;
+    width: 150px;
+    height: 150px;
+  }
+
+  /* Anillo principal */
+  .ring {
+    width: 100%;
+    height: 100%;
+    border: 12px solid gold;
+    border-radius: 50%;
+    box-shadow: inset -4px -4px 15px rgba(0,0,0,0.5),
+                inset 4px 4px 15px rgba(255,255,255,0.2),
+                0 0 20px rgba(255, 215, 0, 0.6);
+    animation: rotate-ring 3s linear infinite;
+    transform-style: preserve-3d;
+    position: relative;
+  }
+
+  /* Diamante externo */
+  .diamond {
+    position: absolute;
+    top: -25px; /* fuera del borde del anillo */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(45deg, #00ffff, #ffffff);
+    clip-path: polygon(50% 0%, 85% 25%, 100% 60%, 50% 100%, 0% 60%, 15% 25%);
+    box-shadow: 0 0 15px #00ffff;
+    z-index: 2;
+  }
+
+  @keyframes rotate-ring {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    50% { transform: rotateX(180deg) rotateY(180deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg); }
+  }
+
+  /* Texto de carga */
+  .loading-text {
+    position: absolute;
+    top: 170px;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 1.2em;
+    letter-spacing: 2px;
+    animation: fade-text 2s infinite;
+  }
+
+  @keyframes fade-text {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="loader">
+    <div class="ring">
+      <div class="diamond"></div>
+    </div>
+    <div class="loading-text">Cargando...</div>
+  </div>
+
+  <script>
+    // Redirigir a la página "inicio" después de 2.5 segundos
+    setTimeout(() => {
+      window.location.href = 'inicio.html';
+    }, 3000);
+  </script>
+
+</body>
+</html>

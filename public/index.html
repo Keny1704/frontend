@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <title>Iniciar Sesion - Keny Joyeria</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
@@ -44,7 +45,9 @@
               // Si el login es exitoso, guardamos el token y los datos del usuario en localStorage
               localStorage.setItem("token", data.token);
               localStorage.setItem("user", JSON.stringify(data.user));
-              window.location.href = "/inicio"; // Redirigimos al dashboard
+              
+              localStorage.setItem("username", data.user.username);
+              window.location.href = "/carga"; // Redirigimos al dashboard
             } else {
               setError(data.message || "Credenciales incorrectas."); // Mostramos el error si las credenciales son incorrectas
             }
